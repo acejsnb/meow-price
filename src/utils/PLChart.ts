@@ -98,21 +98,25 @@ const createPLChart = (container: HTMLDivElement, data: Data) =>  {
 
   // 添加P/L区域
   const area = d3.area()
+    // @ts-ignore
     .x(d => x(d.price))
     .y0(y(0))
+    // @ts-ignore
     .y1(d => y(d.pl));
 
   svg.append('path')
     .attr('fill', 'rgba(255,106,0,0.3)')
+    // @ts-ignore
     .attr('d', area(data.plPoints.filter((d) => d.pl <= 0)));
   svg.append('path')
     .attr('fill', 'rgba(4,227,48,0.3)')
+    // @ts-ignore
     .attr('d', area(data.plPoints.filter((d) => d.pl > 0)));
 
   // 绘制P/L线
   const line = d3.line()
-    .x(d => x(d.price))
-    .y(d => y(d.pl));
+    // @ts-ignore
+    .x(d => x(d.price)).y(d => y(d.pl));
 
   svg.append("path")
     .datum(data.plPoints)
@@ -120,6 +124,7 @@ const createPLChart = (container: HTMLDivElement, data: Data) =>  {
     .attr("fill", "none")
     .attr("stroke", "#04e330")
     .attr("stroke-width", 2)
+    // @ts-ignore
     .attr("d", line);
 
   const defLine = svg.append("g");
@@ -187,6 +192,7 @@ const createPLChart = (container: HTMLDivElement, data: Data) =>  {
     .style('stroke', '#000');
 
   const mousemove = (event: any) => {
+    // @ts-ignore
     const bisect = d3.bisector(d => d.price).left;
     const x0 = x.invert(d3.pointer(event)[0]);
     const i = bisect(data.plPoints, x0, 1);
