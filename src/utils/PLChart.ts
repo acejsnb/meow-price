@@ -215,10 +215,12 @@ const createPLChart = (container: HTMLDivElement, data: Data) => {
 
     if (keyPoints.some(item => item.x === d.price)) {
       const item = keyPoints.find(item => item.x === d.price);
-      item && (d3.select(`.${item.label.replace(' ', '')}`)
-        .select('circle')
-        .transition().duration(300)
-        .attr('r', 10));
+      if (item) {
+        (d3.select(`.${item.label.replace(' ', '')}`)
+          .select('circle')
+          .transition().duration(300)
+          .attr('r', 10));
+      }
       keyPoints.filter(item => item.x !== d.price).forEach(item => {
         const dom = document.querySelector(`#${item.label.replace(' ', '')}`) as HTMLElement;
         dom.classList.add('opacity-30')
@@ -227,7 +229,7 @@ const createPLChart = (container: HTMLDivElement, data: Data) => {
       d3.selectAll('.key-point').selectChild('circle').attr('r', 6)
       keyPoints.forEach(item => {
         const dom = document.querySelector(`#${item.label.replace(' ', '')}`) as HTMLElement;
-        dom.classList.contains('opacity-30') && dom.classList.remove('opacity-30')
+        if (dom.classList.contains('opacity-30')) dom.classList.remove('opacity-30');
       })
     }
   }
