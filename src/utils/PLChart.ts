@@ -100,40 +100,25 @@ const createPLChart = (container: HTMLDivElement, data: Data) => {
 
   // 添加P/L区域
   const area = d3.area()
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    .x(d => x(d.price))
+    .x((d) => x((d as unknown as PlPointsItem).price))
     .y0(y(0))
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    .y1(d => y(d.pl));
+    .y1(d => y((d as unknown as PlPointsItem).pl));
 
   svg.append('path')
     .attr('fill', 'rgba(255,106,0,0.3)')
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    .attr('d', area(data.plPoints.filter((d) => d.pl <= 0)));
+    .attr('d', area(data.plPoints.filter((d) => d.pl <= 0) as []));
   svg.append('path')
     .attr('fill', 'rgba(4,227,48,0.3)')
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    .attr('d', area(data.plPoints.filter((d) => d.pl > 0)));
+    .attr('d', area(data.plPoints.filter((d) => d.pl > 0) as []));
 
   // 绘制P/L线
-  const line = d3.line()
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    .x(d => x(d.price)).y(d => y(d.pl));
-
   svg.append("path")
     .datum(data.plPoints)
     .attr("class", "pl-line")
     .attr("fill", "none")
     .attr("stroke", "#04e330")
     .attr("stroke-width", 2)
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    .attr("d", line);
+    .attr("d", d3.line(d => x((d as unknown as PlPointsItem).price), d => y((d as unknown as PlPointsItem).pl)));
 
   const defLine = svg.append("g");
   defLine.append('line')
@@ -199,12 +184,8 @@ const createPLChart = (container: HTMLDivElement, data: Data) => {
     .style('stroke-width', 1.5)
     .style('stroke', '#000');
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const mousemove = (event) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const bisect = d3.bisector(d => d.price).left;
+  const mousemove = (event: d3.EnterElement) => {
+    const bisect = d3.bisector(d => (d as PlPointsItem).price).left;
     const x0 = x.invert(d3.pointer(event)[0]);
     const i = bisect(data.plPoints, x0, 1);
     const d0 = data.plPoints[i - 1];
